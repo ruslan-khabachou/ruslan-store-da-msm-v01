@@ -1,0 +1,96 @@
+{
+  "generatedFrom": "config/site-matrix.json",
+  "routes": [
+    {
+      "priority": 10,
+      "match": {
+        "path": "/api/*"
+      },
+      "origin": "https://ruslan-store-bff.azurewebsites.net",
+      "purpose": "Same-domain API calls to Azure BFF"
+    },
+    {
+      "priority": 20,
+      "match": {
+        "path": "/assets/*"
+      },
+      "origin": "https://publish-p00000-e00000.adobeaemcloud.com",
+      "purpose": "Optional AEM Assets/Dynamic Media only; never page content"
+    },
+    {
+      "priority": 50,
+      "match": {
+        "host": "www.ruslan-store.ca",
+        "path": "/"
+      },
+      "action": {
+        "type": "redirect",
+        "status": 302,
+        "location": "/en/"
+      },
+      "purpose": "CA default-locale redirect"
+    },
+    {
+      "priority": 51,
+      "match": {
+        "host": "www.ruslan-store.fr",
+        "path": "/"
+      },
+      "action": {
+        "type": "redirect",
+        "status": 302,
+        "location": "/fr/"
+      },
+      "purpose": "FR default-locale redirect"
+    },
+    {
+      "priority": 52,
+      "match": {
+        "host": "www.ruslan-store.us",
+        "path": "/"
+      },
+      "action": {
+        "type": "redirect",
+        "status": 302,
+        "location": "/fr/"
+      },
+      "purpose": "US default-locale redirect"
+    },
+    {
+      "priority": 100,
+      "match": {
+        "host": "www.ruslan-store.ca",
+        "path": "/en/*"
+      },
+      "origin": "https://main--ca-site--YOUR_GITHUB_ORG.aem.live",
+      "purpose": "CA EN EDS live copy"
+    },
+    {
+      "priority": 101,
+      "match": {
+        "host": "www.ruslan-store.ca",
+        "path": "/fr/*"
+      },
+      "origin": "https://main--ca-site--YOUR_GITHUB_ORG.aem.live",
+      "purpose": "CA FR EDS live copy"
+    },
+    {
+      "priority": 102,
+      "match": {
+        "host": "www.ruslan-store.fr",
+        "path": "/fr/*"
+      },
+      "origin": "https://main--fr-site--YOUR_GITHUB_ORG.aem.live",
+      "purpose": "FR FR EDS live copy"
+    },
+    {
+      "priority": 103,
+      "match": {
+        "host": "www.ruslan-store.us",
+        "path": "/fr/*"
+      },
+      "origin": "https://main--us-site--YOUR_GITHUB_ORG.aem.live",
+      "purpose": "US FR EDS live copy"
+    }
+  ]
+}

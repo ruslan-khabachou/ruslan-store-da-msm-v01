@@ -1,0 +1,4 @@
+mountpoints:
+  /:
+    url: https://content.da.live/YOUR_TARGET_DA_ORG/base-site/
+    type: markup

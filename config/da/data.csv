@@ -1,0 +1,5 @@
+key,value
+editor.path,/YOUR_TARGET_DA_ORG/base-site=https://experience.adobe.com/#/@YOUR_DX_HANDLE/aem/editor/canvas/main--ruslan-store-da-msm-v01--YOUR_GITHUB_ORG.ue.da.live
+editor.path,/YOUR_TARGET_DA_ORG/ca-site=https://experience.adobe.com/#/@YOUR_DX_HANDLE/aem/editor/canvas/main--ruslan-store-da-msm-v01--YOUR_GITHUB_ORG.ue.da.live
+editor.path,/YOUR_TARGET_DA_ORG/fr-site=https://experience.adobe.com/#/@YOUR_DX_HANDLE/aem/editor/canvas/main--ruslan-store-da-msm-v01--YOUR_GITHUB_ORG.ue.da.live
+editor.path,/YOUR_TARGET_DA_ORG/us-site=https://experience.adobe.com/#/@YOUR_DX_HANDLE/aem/editor/canvas/main--ruslan-store-da-msm-v01--YOUR_GITHUB_ORG.ue.da.live

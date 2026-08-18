@@ -1,0 +1,28 @@
+{
+  "version": 1,
+  "code": {
+    "owner": "YOUR_GITHUB_ORG",
+    "repo": "ruslan-store-da-msm-v01",
+    "ref": "main",
+    "source": {
+      "type": "github",
+      "url": "https://github.com/YOUR_GITHUB_ORG/ruslan-store-da-msm-v01"
+    }
+  },
+  "content": {
+    "source": {
+      "url": "https://da-msm.adobeaem.workers.dev/YOUR_TARGET_DA_ORG/base-site/",
+      "type": "markup"
+    }
+  },
+  "access": {
+    "admin": {
+      "role": {
+        "admin": [
+          "YOUR_EDS_ADMIN_EMAIL"
+        ]
+      },
+      "requireAuth": "auto"
+    }
+  }
+}

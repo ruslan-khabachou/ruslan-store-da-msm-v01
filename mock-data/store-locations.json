@@ -1,0 +1,18 @@
+{
+  "stores": [
+    {
+      "id": "ca-toronto-001",
+      "name": "Ruslan Store Toronto",
+      "address": "100 King Street West, Toronto, ON",
+      "distanceKm": 1.8,
+      "url": "/en/stores/toronto"
+    },
+    {
+      "id": "ca-montreal-001",
+      "name": "Ruslan Store Montréal",
+      "address": "1200 Rue Sainte-Catherine, Montréal, QC",
+      "distanceKm": 4.2,
+      "url": "/fr/magasins/montreal"
+    }
+  ]
+}

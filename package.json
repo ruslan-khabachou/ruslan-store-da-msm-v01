@@ -1,0 +1,45 @@
+{
+  "name": "ruslan-store-da-msm-v01",
+  "private": true,
+  "version": "1.0.0",
+  "description": "DA Author Bus, Universal Editor, Edge Delivery Services and site-level DA MSM starter for Ruslan Store",
+  "scripts": {
+    "build": "npm run build:mfe && npm run build:json && npm run config:generate",
+    "build:mfe": "node scripts/build-mfe.mjs",
+    "build:json": "npm-run-all -p build:json:models build:json:definitions build:json:filters",
+    "build:json:models": "merge-json-cli -i \"ue/models/component-models.json\" -o \"component-models.json\"",
+    "build:json:definitions": "merge-json-cli -i \"ue/models/component-definition.json\" -o \"component-definition.json\" && node scripts/copy-ue-definition.mjs",
+    "build:json:filters": "merge-json-cli -i \"ue/models/component-filters.json\" -o \"component-filters.json\"",
+    "config:generate": "node scripts/generate-site-configs.mjs",
+    "site:add": "node scripts/add-satellite.mjs",
+    "sites:provision": "bash scripts/provision-eds-sites.sh",
+    "validate": "node scripts/validate-project.mjs",
+    "test": "npm run build && node --test tests/*.test.mjs && npm run validate",
+    "lint:js": "eslint .",
+    "lint:css": "stylelint 'blocks/**/*.css' 'styles/*.css'",
+    "lint": "npm run lint:js && npm run lint:css",
+    "prepare": "husky"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/YOUR_GITHUB_ORG/ruslan-store-da-msm-v01.git"
+  },
+  "author": "Ruslan Store",
+  "license": "Apache-2.0",
+  "dependencies": {
+    "react": "18.3.1",
+    "react-dom": "18.3.1"
+  },
+  "devDependencies": {
+    "@babel/eslint-parser": "7.24.8",
+    "esbuild": "0.25.9",
+    "eslint": "8.57.0",
+    "eslint-config-airbnb-base": "15.0.0",
+    "eslint-plugin-import": "2.29.1",
+    "husky": "9.1.7",
+    "merge-json-cli": "1.0.4",
+    "npm-run-all": "4.1.5",
+    "stylelint": "16.7.0",
+    "stylelint-config-standard": "36.0.1"
+  }
+}

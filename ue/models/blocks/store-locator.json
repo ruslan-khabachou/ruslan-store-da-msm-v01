@@ -1,0 +1,69 @@
+{
+  "definitions": [
+    {
+      "title": "Store Locator (React)",
+      "id": "store-locator",
+      "model": "store-locator",
+      "plugins": {
+        "da": {
+          "unsafeHTML": "<div class=\"store-locator\"><div><div>Endpoint</div><div>/api/web/stores</div></div><div><div>Country</div><div>ca</div></div><div><div>Language</div><div>en</div></div><div><div>Variant</div><div>compact</div></div><div><div>Mock Data</div><div>/mock-data/store-locations.json</div></div></div>",
+          "fields": [
+            { "name": "endpoint", "selector": "div:nth-child(1)>div:nth-child(2)" },
+            { "name": "country", "selector": "div:nth-child(2)>div:nth-child(2)" },
+            { "name": "language", "selector": "div:nth-child(3)>div:nth-child(2)" },
+            { "name": "variant", "selector": "div:nth-child(4)>div:nth-child(2)" },
+            { "name": "mockData", "selector": "div:nth-child(5)>div:nth-child(2)" }
+          ]
+        }
+      }
+    }
+  ],
+  "models": [
+    {
+      "id": "store-locator",
+      "fields": [
+        {
+          "component": "text",
+          "name": "endpoint",
+          "label": "Same-domain API endpoint",
+          "valueType": "string",
+          "required": true
+        },
+        {
+          "component": "text",
+          "name": "country",
+          "label": "Country code",
+          "valueType": "string",
+          "required": true
+        },
+        {
+          "component": "select",
+          "name": "language",
+          "label": "Language",
+          "valueType": "string",
+          "options": [
+            { "name": "English", "value": "en" },
+            { "name": "Français", "value": "fr" }
+          ]
+        },
+        {
+          "component": "select",
+          "name": "variant",
+          "label": "Variant",
+          "valueType": "string",
+          "options": [
+            { "name": "Default", "value": "default" },
+            { "name": "Compact", "value": "compact" }
+          ]
+        },
+        {
+          "component": "text",
+          "name": "mockData",
+          "label": "Local mock data path",
+          "valueType": "string"
+        }
+      ]
+    }
+  ],
+  "filters": []
+}

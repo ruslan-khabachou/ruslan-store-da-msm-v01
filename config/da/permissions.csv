@@ -1,0 +1,5 @@
+path,groups,actions,comments
+CONFIG,YOUR_IMS_ORG_ID,read,IMS organization can read DA configuration
+CONFIG,YOUR_IMS_ORG_ID/DA Admins,write,DA administrators can update org and site configuration
+/+**,YOUR_IMS_ORG_ID,read,IMS organization can read all project content
+/+**,YOUR_IMS_ORG_ID/DA Authors,write,DA authors can edit base and satellite content

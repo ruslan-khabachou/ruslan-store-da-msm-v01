@@ -1,0 +1,77 @@
+{
+  "projectName": "ruslan-store-da-msm-v01",
+  "brand": "ruslan-store",
+  "daOrg": "YOUR_TARGET_DA_ORG",
+  "edsOrg": "YOUR_GITHUB_ORG",
+  "git": {
+    "owner": "YOUR_GITHUB_ORG",
+    "repo": "ruslan-store-da-msm-v01",
+    "ref": "main"
+  },
+  "contentProvider": "https://da-msm.adobeaem.workers.dev/{org}/{site}/",
+  "universalEditor": {
+    "enabled": true,
+    "contentRepository": "DA Author Bus",
+    "earlyAccess": true,
+    "dxHandle": "@YOUR_DX_HANDLE",
+    "canvasHost": "main--{repo}--{owner}.ue.da.live"
+  },
+  "access": {
+    "admins": [
+      "YOUR_EDS_ADMIN_EMAIL"
+    ],
+    "configAdmins": [],
+    "imsOrgId": "YOUR_IMS_ORG_ID",
+    "daAdminGroup": "DA Admins",
+    "daAuthorGroup": "DA Authors"
+  },
+  "services": {
+    "azureBffOrigin": "https://ruslan-store-bff.azurewebsites.net",
+    "aemAssetsOrigin": "https://publish-p00000-e00000.adobeaemcloud.com"
+  },
+  "localizedFragments": [
+    "nav",
+    "footer"
+  ],
+  "baseSite": {
+    "name": "base-site",
+    "title": "Ruslan Store multilingual base",
+    "locales": [
+      "en",
+      "fr"
+    ]
+  },
+  "satellites": [
+    {
+      "name": "ca-site",
+      "title": "Ruslan Store Canada",
+      "country": "CA",
+      "domain": "www.ruslan-store.ca",
+      "base": "base-site",
+      "locales": [
+        "en",
+        "fr"
+      ]
+    },
+    {
+      "name": "fr-site",
+      "title": "Ruslan Store France",
+      "country": "FR",
+      "domain": "www.ruslan-store.fr",
+      "base": "base-site",
+      "locales": [
+        "fr"
+      ]
+    },
+    {
+      "name": "us-site",
+      "title": "Ruslan Store United States",
+      "country": "US",
+      "domain": "www.ruslan-store.us",
+      "base": "base-site",
+      "locales": [
+        "fr"
+      ]
+    }
+  ]
+}
