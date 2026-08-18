@@ -1,4 +1,4 @@
 mountpoints:
   /:
-    url: https://content.da.live/YOUR_TARGET_DA_ORG/base-site/
+    url: https://content.da.live/ruslan-khabachou/base-site/
     type: markup

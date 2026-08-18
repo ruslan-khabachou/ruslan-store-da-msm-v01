@@ -29,7 +29,7 @@ test('all EDS sites share one Git repo and use the target DA org MSM provider', 
   assert.deepEqual(files, ['base-site.json', 'ca-site.json', 'fr-site.json', 'us-site.json']);
   await Promise.all(files.map(async (file) => {
     const payload = JSON.parse(await fs.readFile(path.join(root, 'config/eds/sites', file), 'utf8'));
-    assert.equal(payload.code.owner, 'YOUR_GITHUB_ORG');
+    assert.equal(payload.code.owner, 'ruslan-khabachou');
     assert.equal(payload.code.repo, 'ruslan-store-da-msm-v01');
     assert.equal(payload.content.source.type, 'markup');
     assert.match(payload.content.source.url, /^https:\/\/da-msm\.adobeaem\.workers\.dev\/YOUR_TARGET_DA_ORG\//);
@@ -54,8 +54,8 @@ test('DA config exports describe MSM, UE, permissions and locale roots', async (
   ].join('\n'));
   assert.equal(prepare, 'title,path,icon,ref\nMulti-site Manager,,,\n');
   assert.match(data, /editor\.path,\/YOUR_TARGET_DA_ORG\/base-site=/);
-  assert.match(data, /main--ruslan-store-da-msm-v01--YOUR_GITHUB_ORG\.ue\.da\.live/);
-  assert.match(permissions, /CONFIG,YOUR_IMS_ORG_ID\/DA Admins,write/);
+  assert.match(data, /main--ruslan-store-da-msm-v01--ruslan-khabachou\.ue\.da\.live/);
+  assert.match(permissions, /CONFIG,ruslan-khabachou\/DA Admins,write/);
   assert.equal(locales.trim().split('\n').length, 7);
 });
 

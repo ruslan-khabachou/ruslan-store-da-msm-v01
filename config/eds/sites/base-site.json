@@ -1,17 +1,17 @@
 {
   "version": 1,
   "code": {
-    "owner": "YOUR_GITHUB_ORG",
+    "owner": "ruslan-khabachou",
     "repo": "ruslan-store-da-msm-v01",
     "ref": "main",
     "source": {
       "type": "github",
-      "url": "https://github.com/YOUR_GITHUB_ORG/ruslan-store-da-msm-v01"
+      "url": "https://github.com/ruslan-khabachou/ruslan-store-da-msm-v01"
     }
   },
   "content": {
     "source": {
-      "url": "https://da-msm.adobeaem.workers.dev/YOUR_TARGET_DA_ORG/base-site/",
+      "url": "https://da-msm.adobeaem.workers.dev/ruslan-khabachou/base-site/",
       "type": "markup"
     }
   },
@@ -19,7 +19,7 @@
     "admin": {
       "role": {
         "admin": [
-          "YOUR_EDS_ADMIN_EMAIL"
+          "ruslan_khabachou@epam.com"
         ]
       },
       "requireAuth": "auto"

@@ -1,10 +1,10 @@
 {
   "projectName": "ruslan-store-da-msm-v01",
   "brand": "ruslan-store",
-  "daOrg": "YOUR_TARGET_DA_ORG",
-  "edsOrg": "YOUR_GITHUB_ORG",
+  "daOrg": "ruslan-khabachou",
+  "edsOrg": "ruslan-khabachou",
   "git": {
-    "owner": "YOUR_GITHUB_ORG",
+    "owner": "ruslan-khabachou",
     "repo": "ruslan-store-da-msm-v01",
     "ref": "main"
   },
@@ -13,15 +13,15 @@
     "enabled": true,
     "contentRepository": "DA Author Bus",
     "earlyAccess": true,
-    "dxHandle": "@YOUR_DX_HANDLE",
+    "dxHandle": "@royalairmaroc",
     "canvasHost": "main--{repo}--{owner}.ue.da.live"
   },
   "access": {
     "admins": [
-      "YOUR_EDS_ADMIN_EMAIL"
+      "ruslan_khabachou@epam.com"
     ],
     "configAdmins": [],
-    "imsOrgId": "YOUR_IMS_ORG_ID",
+    "imsOrgId": "ruslan-khabachou",
     "daAdminGroup": "DA Admins",
     "daAuthorGroup": "DA Authors"
   },
@@ -42,6 +42,17 @@
     ]
   },
   "satellites": [
+    {
+      "name": "be-site",
+      "title": "Ruslan Store Belgium",
+      "country": "BE",
+      "domain": "www.ruslan-store.be",
+      "base": "base-site",
+      "locales": [
+        "en",
+        "fr"
+      ]
+    },
     {
       "name": "ca-site",
       "title": "Ruslan Store Canada",

@@ -1,6 +1,8 @@
 site,role,base,country,locale,rootPath,domain,localizedFragments
 base-site,base,,GLOBAL,en,/en,,/en/nav;/en/footer
 base-site,base,,GLOBAL,fr,/fr,,/fr/nav;/fr/footer
+be-site,satellite,base-site,BE,en,/en,www.ruslan-store.be,/en/nav;/en/footer
+be-site,satellite,base-site,BE,fr,/fr,www.ruslan-store.be,/fr/nav;/fr/footer
 ca-site,satellite,base-site,CA,en,/en,www.ruslan-store.ca,/en/nav;/en/footer
 ca-site,satellite,base-site,CA,fr,/fr,www.ruslan-store.ca,/fr/nav;/fr/footer
 fr-site,satellite,base-site,FR,fr,/fr,www.ruslan-store.fr,/fr/nav;/fr/footer

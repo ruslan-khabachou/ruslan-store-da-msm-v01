@@ -20,6 +20,19 @@
     {
       "priority": 50,
       "match": {
+        "host": "www.ruslan-store.be",
+        "path": "/"
+      },
+      "action": {
+        "type": "redirect",
+        "status": 302,
+        "location": "/en/"
+      },
+      "purpose": "BE default-locale redirect"
+    },
+    {
+      "priority": 51,
+      "match": {
         "host": "www.ruslan-store.ca",
         "path": "/"
       },
@@ -31,7 +44,7 @@
       "purpose": "CA default-locale redirect"
     },
     {
-      "priority": 51,
+      "priority": 52,
       "match": {
         "host": "www.ruslan-store.fr",
         "path": "/"
@@ -44,7 +57,7 @@
       "purpose": "FR default-locale redirect"
     },
     {
-      "priority": 52,
+      "priority": 53,
       "match": {
         "host": "www.ruslan-store.us",
         "path": "/"
@@ -59,37 +72,55 @@
     {
       "priority": 100,
       "match": {
-        "host": "www.ruslan-store.ca",
+        "host": "www.ruslan-store.be",
         "path": "/en/*"
       },
-      "origin": "https://main--ca-site--YOUR_GITHUB_ORG.aem.live",
-      "purpose": "CA EN EDS live copy"
+      "origin": "https://main--be-site--ruslan-khabachou.aem.live",
+      "purpose": "BE EN EDS live copy"
     },
     {
       "priority": 101,
       "match": {
-        "host": "www.ruslan-store.ca",
+        "host": "www.ruslan-store.be",
         "path": "/fr/*"
       },
-      "origin": "https://main--ca-site--YOUR_GITHUB_ORG.aem.live",
-      "purpose": "CA FR EDS live copy"
+      "origin": "https://main--be-site--ruslan-khabachou.aem.live",
+      "purpose": "BE FR EDS live copy"
     },
     {
       "priority": 102,
       "match": {
-        "host": "www.ruslan-store.fr",
-        "path": "/fr/*"
+        "host": "www.ruslan-store.ca",
+        "path": "/en/*"
       },
-      "origin": "https://main--fr-site--YOUR_GITHUB_ORG.aem.live",
-      "purpose": "FR FR EDS live copy"
+      "origin": "https://main--ca-site--ruslan-khabachou.aem.live",
+      "purpose": "CA EN EDS live copy"
     },
     {
       "priority": 103,
       "match": {
+        "host": "www.ruslan-store.ca",
+        "path": "/fr/*"
+      },
+      "origin": "https://main--ca-site--ruslan-khabachou.aem.live",
+      "purpose": "CA FR EDS live copy"
+    },
+    {
+      "priority": 104,
+      "match": {
+        "host": "www.ruslan-store.fr",
+        "path": "/fr/*"
+      },
+      "origin": "https://main--fr-site--ruslan-khabachou.aem.live",
+      "purpose": "FR FR EDS live copy"
+    },
+    {
+      "priority": 105,
+      "match": {
         "host": "www.ruslan-store.us",
         "path": "/fr/*"
       },
-      "origin": "https://main--us-site--YOUR_GITHUB_ORG.aem.live",
+      "origin": "https://main--us-site--ruslan-khabachou.aem.live",
       "purpose": "US FR EDS live copy"
     }
   ]
