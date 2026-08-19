@@ -12,8 +12,11 @@ CODE_OWNER=""
 CODE_REPO="ruslan-store-da-msm-v01"
 CODE_REF="main"
 MANIFEST="${PROJECT_DIR}/config/da/msm.csv"
+SAMPLE_CONTENT_DIR="${PROJECT_DIR}/content-samples"
 APPLY=false
 CREATE_DA_SITES=false
+COPY_SAMPLE_CONTENT=false
+SKIP_EDS=false
 CONTINUE_ON_ERROR=false
 
 AEM_ADMIN_ORIGIN="${AEM_ADMIN_ORIGIN:-https://admin.hlx.page}"
@@ -31,7 +34,9 @@ usage() {
     '    [--code-repo <github-repo>] \' \
     '    [--code-ref <branch>] \' \
     '    [--manifest <msm.csv>] \' \
-    '    [--create-da-sites] [--continue-on-error] [--apply]' \
+    '    [--create-da-sites] [--copy-sample-content] \' \
+    '    [--sample-content-dir <directory>] [--skip-eds] \' \
+    '    [--continue-on-error] [--apply]' \
     '' \
     'Separation of concerns:' \
     '  --eds-org     Existing EDS Configuration Service org (normally the GitHub owner).' \
@@ -39,15 +44,23 @@ usage() {
     '  --code-owner  Existing GitHub owner; unchanged across DA organization rollouts.' \
     '' \
     'Apply-mode environment variables:' \
-    '  AEM_ADMIN_TOKEN  Required EDS Admin API auth token.' \
-    '  DA_IMS_TOKEN     Required only with --create-da-sites.' \
+    '  AEM_ADMIN_TOKEN  Required unless --skip-eds is used.' \
+    '  DA_IMS_TOKEN     Required with --create-da-sites or --copy-sample-content.' \
+    '' \
+    'DA content options:' \
+    '  --create-da-sites       Create missing base and satellite roots from msm.csv.' \
+    '  --copy-sample-content   Also create locale folders and upload content-samples.' \
+    '                          Existing DA files are preserved and reported as skipped.' \
+    '  --sample-content-dir    Override the default ./content-samples directory.' \
+    '  --skip-eds              Perform only DA operations; AEM_ADMIN_TOKEN is not needed.' \
     '' \
     'Example:' \
     '  scripts/rollout-msm-org.sh \' \
     '    --eds-org ruslan-khabachou \' \
     '    --da-org new-da-org-id \' \
     '    --code-owner ruslan-khabachou \' \
-    '    --code-repo ruslan-store-da-msm-v01'
+    '    --code-repo ruslan-store-da-msm-v01 \' \
+    '    --create-da-sites --copy-sample-content --apply'
 }
 
 die() {
@@ -126,6 +139,20 @@ while (($#)); do
       CREATE_DA_SITES=true
       shift
       ;;
+    --copy-sample-content)
+      COPY_SAMPLE_CONTENT=true
+      CREATE_DA_SITES=true
+      shift
+      ;;
+    --sample-content-dir)
+      (($# >= 2)) || die '--sample-content-dir requires a value'
+      SAMPLE_CONTENT_DIR="$2"
+      shift 2
+      ;;
+    --skip-eds)
+      SKIP_EDS=true
+      shift
+      ;;
     --continue-on-error)
       CONTINUE_ON_ERROR=true
       shift
@@ -148,6 +175,9 @@ done
 [[ -n "${DA_ORG}" ]] || die '--da-org is required'
 [[ -n "${CODE_OWNER}" ]] || CODE_OWNER="${EDS_ORG}"
 [[ -f "${MANIFEST}" ]] || die "Manifest not found: ${MANIFEST}"
+if [[ "${COPY_SAMPLE_CONTENT}" == true ]]; then
+  [[ -d "${SAMPLE_CONTENT_DIR}" ]] || die "Sample content directory not found: ${SAMPLE_CONTENT_DIR}"
+fi
 [[ "${AEM_ADMIN_ORIGIN}" == https://* ]] || die 'AEM_ADMIN_ORIGIN must use HTTPS'
 [[ "${DA_ADMIN_ORIGIN}" == https://* ]] || die 'DA_ADMIN_ORIGIN must use HTTPS'
 
@@ -157,15 +187,19 @@ validate_slug 'Code owner' "${CODE_OWNER}"
 validate_slug 'Code repository' "${CODE_REPO}"
 
 if [[ "${APPLY}" == true ]]; then
-  [[ -n "${AEM_ADMIN_TOKEN:-}" ]] || die 'AEM_ADMIN_TOKEN is required with --apply'
-  if [[ "${CREATE_DA_SITES}" == true ]]; then
-    [[ -n "${DA_IMS_TOKEN:-}" ]] || die 'DA_IMS_TOKEN is required with --create-da-sites --apply'
+  if [[ "${SKIP_EDS}" != true ]]; then
+    [[ -n "${AEM_ADMIN_TOKEN:-}" ]] || die 'AEM_ADMIN_TOKEN is required with --apply unless --skip-eds is used'
+  fi
+  if [[ "${CREATE_DA_SITES}" == true || "${COPY_SAMPLE_CONTENT}" == true ]]; then
+    [[ -n "${DA_IMS_TOKEN:-}" ]] \
+      || die 'DA_IMS_TOKEN is required with DA creation/content options in apply mode'
   fi
 fi
 
 BASE_SITES=()
 SATELLITE_SITES=()
 SATELLITE_BASES=()
+DA_READY_FOLDERS=()
 
 while IFS=',' read -r raw_base raw_satellite _title _extra; do
   base="$(clean_csv_cell "${raw_base:-}")"
@@ -232,7 +266,7 @@ post_json() {
 }
 
 preflight_eds_admin() {
-  [[ "${APPLY}" == true ]] || return 0
+  [[ "${APPLY}" == true && "${SKIP_EDS}" != true ]] || return 0
   local status
   status="$(http_status \
     --header "x-auth-token: ${AEM_ADMIN_TOKEN}" \
@@ -251,6 +285,142 @@ preflight_eds_admin() {
       die "Unable to verify EDS org administration for ${EDS_ORG} (HTTP ${status})"
       ;;
   esac
+}
+
+ensure_da_folder() {
+  local site="$1"
+  local folder="$2"
+  local folder_key="${site}/${folder}"
+  local url="${DA_ADMIN_ORIGIN}/source/${DA_ORG}/${site}/${folder}"
+
+  if ((${#DA_READY_FOLDERS[@]} > 0)) && contains "${folder_key}" "${DA_READY_FOLDERS[@]}"; then
+    return 0
+  fi
+
+  if [[ "${APPLY}" != true ]]; then
+    log "DRY-RUN DA DIR   POST ${url}"
+    DA_READY_FOLDERS+=("${folder_key}")
+    return 0
+  fi
+
+  local status
+  status="$(http_status \
+    --request POST \
+    --header "Authorization: Bearer ${DA_IMS_TOKEN}" \
+    "${url}")"
+  case "${status}" in
+    200|201|204|409)
+      log "READY   DA DIR   ${DA_ORG}/${site}/${folder}"
+      DA_READY_FOLDERS+=("${folder_key}")
+      ;;
+    401|403)
+      log "FAILED  DA DIR   ${DA_ORG}/${site}/${folder}: authorization returned HTTP ${status}" >&2
+      return 1
+      ;;
+    *)
+      log "FAILED  DA DIR   ${DA_ORG}/${site}/${folder}: create returned HTTP ${status}" >&2
+      return 1
+      ;;
+  esac
+}
+
+ensure_da_parent_folders() {
+  local site="$1"
+  local relative_file="$2"
+  local parent="${relative_file%/*}"
+  local current=""
+  local remaining
+  local segment
+
+  [[ "${parent}" != "${relative_file}" ]] || return 0
+
+  remaining="${parent}"
+  while [[ -n "${remaining}" ]]; do
+    if [[ "${remaining}" == */* ]]; then
+      segment="${remaining%%/*}"
+      remaining="${remaining#*/}"
+    else
+      segment="${remaining}"
+      remaining=""
+    fi
+    if [[ -n "${current}" ]]; then
+      current="${current}/${segment}"
+    else
+      current="${segment}"
+    fi
+    ensure_da_folder "${site}" "${current}" || return 1
+  done
+}
+
+copy_da_sample_file() {
+  local site="$1"
+  local relative_file="$2"
+  local source_file="$3"
+  local url="${DA_ADMIN_ORIGIN}/source/${DA_ORG}/${site}/${relative_file}"
+
+  if [[ "${APPLY}" != true ]]; then
+    log "DRY-RUN DA FILE  POST ${url} <- ${source_file}"
+    return 0
+  fi
+
+  local status
+  status="$(http_status \
+    --header "Authorization: Bearer ${DA_IMS_TOKEN}" \
+    "${url}")"
+  case "${status}" in
+    200)
+      log "SKIPPED DA FILE  ${DA_ORG}/${site}/${relative_file} (already exists)"
+      return 0
+      ;;
+    404)
+      ;;
+    401|403)
+      log "FAILED  DA FILE  ${DA_ORG}/${site}/${relative_file}: authorization returned HTTP ${status}" >&2
+      return 1
+      ;;
+    *)
+      log "FAILED  DA FILE  ${DA_ORG}/${site}/${relative_file}: lookup returned HTTP ${status}" >&2
+      return 1
+      ;;
+  esac
+
+  status="$(http_status \
+    --request POST \
+    --header "Authorization: Bearer ${DA_IMS_TOKEN}" \
+    --form "data=@${source_file}" \
+    "${url}")"
+  case "${status}" in
+    200|201|204)
+      log "COPIED  DA FILE  ${DA_ORG}/${site}/${relative_file}"
+      ;;
+    *)
+      log "FAILED  DA FILE  ${DA_ORG}/${site}/${relative_file}: upload returned HTTP ${status}" >&2
+      return 1
+      ;;
+  esac
+}
+
+copy_da_sample_content() {
+  local site="$1"
+  local site_dir="${SAMPLE_CONTENT_DIR}/${site}"
+  local source_file
+  local relative_file
+
+  [[ "${COPY_SAMPLE_CONTENT}" == true ]] || return 0
+  if [[ ! -d "${site_dir}" ]]; then
+    log "SKIPPED DA SAMPLE ${site}: no sample directory"
+    return 0
+  fi
+
+  while IFS= read -r source_file; do
+    relative_file="${source_file#${site_dir}/}"
+    if [[ ! "${relative_file}" =~ ^[A-Za-z0-9._/-]+$ || "${relative_file}" == *..* ]]; then
+      log "FAILED  DA FILE  Unsafe sample path: ${relative_file}" >&2
+      return 1
+    fi
+    ensure_da_parent_folders "${site}" "${relative_file}" || return 1
+    copy_da_sample_file "${site}" "${relative_file}" "${source_file}" || return 1
+  done < <(find "${site_dir}" -type f -print | LC_ALL=C sort)
 }
 
 ensure_da_site() {
@@ -303,6 +473,8 @@ ensure_eds_site() {
   local parent="$3"
   local url="${AEM_ADMIN_ORIGIN}/config/${EDS_ORG}/sites/${site}.json"
 
+  [[ "${SKIP_EDS}" != true ]] || return 0
+
   if [[ "${APPLY}" != true ]]; then
     log "DRY-RUN EDS      PUT ${url}"
     log "                  role=${role} base=${parent:-none} da=${DA_ORG}/${site}"
@@ -354,7 +526,9 @@ provision_site() {
   local site="$1"
   local role="$2"
   local parent="$3"
-  if ! ensure_da_site "${site}" || ! ensure_eds_site "${site}" "${role}" "${parent}"; then
+  if ! ensure_da_site "${site}" \
+    || ! copy_da_sample_content "${site}" \
+    || ! ensure_eds_site "${site}" "${role}" "${parent}"; then
     FAILED_SITES+=("${site}")
     [[ "${CONTINUE_ON_ERROR}" == true ]] || return 1
   fi
@@ -365,6 +539,12 @@ log "EDS organization: ${EDS_ORG}"
 log "Target DA organization: ${DA_ORG}"
 log "Shared GitHub code: ${CODE_OWNER}/${CODE_REPO}@${CODE_REF}"
 log "Manifest: ${MANIFEST}"
+if [[ "${COPY_SAMPLE_CONTENT}" == true ]]; then
+  log "Sample content: ${SAMPLE_CONTENT_DIR} (existing DA files are preserved)"
+fi
+if [[ "${SKIP_EDS}" == true ]]; then
+  log 'EDS configuration: skipped'
+fi
 log ''
 
 preflight_eds_admin

@@ -1,5 +1,5 @@
 path,groups,actions,comments
-CONFIG,ruslan-khabachou,read,IMS organization can read DA configuration
-CONFIG,ruslan-khabachou/DA Admins,write,DA administrators can update org and site configuration
-/+**,ruslan-khabachou,read,IMS organization can read all project content
-/+**,ruslan-khabachou/DA Authors,write,DA authors can edit base and satellite content
+CONFIG,BA89606254199E970A4C98A2,read,IMS organization can read DA configuration
+CONFIG,BA89606254199E970A4C98A2/DA Admins,write,DA administrators can update org and site configuration
+/+**,BA89606254199E970A4C98A2,read,IMS organization can read all project content
+/+**,BA89606254199E970A4C98A2/DA Authors,write,DA authors can edit base and satellite content
